@@ -26,10 +26,8 @@ model_BMW = tf.keras.models.load_model("./ML_models/BMW_60tik")
 model_Continental = tf.keras.models.load_model("./ML_models/Continental_60tik")
 model_Covestro = tf.keras.models.load_model("./ML_models/Covestro_60tik")
 model_Daimler = tf.keras.models.load_model("./ML_models/Daimler_60tik")
-model_DeutscheBank = tf.keras.models.load_model(
-    "./ML_models/DeutscheBank_60tik")
-model_DeutscheBoerse = tf.keras.models.load_model(
-    "./ML_models/DeutscheBörse_60tik")
+model_DeutscheBank = tf.keras.models.load_model("./ML_models/DeutscheBank_60tik")
+model_DeutscheBoerse = tf.keras.models.load_model("./ML_models/DeutscheBörse_60tik")
 
 
 class SimpleAgent(BaseAgent):
@@ -98,6 +96,8 @@ class SimpleAgent(BaseAgent):
             self.min_vol_quote / book_state['L1-BidPrice'])
         self.min_quant_bid[market_id] = math.ceil(
             self.min_vol_quote / book_state['L1-AskPrice'])
+        
+        # not needed for this strategy
         # self.max_quant_ask[market_id] = max(math.floor(0.95 * self.market_interface.exposure_left / book_state['L1-BidPrice']),0)
         # self.max_quant_bid[market_id] = max(math.floor(0.95 * self.market_interface.exposure_left / book_state['L1-AskPrice']),0)
 
@@ -122,25 +122,17 @@ class SimpleAgent(BaseAgent):
                 book_state["L1-BidPrice"])
 
         # get a prediction from the model
-        # todo: consider moving this to ontime if it takes too long
         if (len(self.last_60_ticks[self.market_id_index[market_id]]) == 60 and \
                 self.last_60_ticks[self.market_id_index[market_id]][0] !=
                 self.last_60_ticks[self.market_id_index[market_id]][-1]):
 
             if market_id == "Adidas":
-                # print(book_state["TIMESTAMP_UTC"])
                 global model_Adidas
                 self.Adidas_ticks = pd.DataFrame(
                     columns=[str(i) for i in range(0, 60)])
                 self.Adidas_ticks.loc[len(self.Adidas_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
-                # self.Adidas_ticks.loc[len(self.Adidas_ticks)] = self.temp
-                # prediction = self.model_Adidas.predict(self.Adidas_ticks)
                 prediction = model_Adidas.predict(self.Adidas_ticks, verbose=0)
-                # print(self.Adidas_ticks.head())
-                # self.Adidas_ticks = self.Adidas_ticks[:-1]
-                # print(self.Adidas_ticks.head())
-                # self.Adidas_ticks = pd.DataFrame(columns=[str(i) for i in range(0, 60)])
 
             elif market_id == "Allianz":
                 global model_Allianz
@@ -148,9 +140,7 @@ class SimpleAgent(BaseAgent):
                     columns=[str(i) for i in range(0, 60)])
                 self.Allianz_ticks.loc[len(self.Allianz_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
-                prediction = model_Allianz.predict(self.Allianz_ticks,
-                                                   verbose=0)
-                # self.Allianz_ticks = self.Allianz_ticks[:-1]
+                prediction = model_Allianz.predict(self.Allianz_ticks, verbose=0)
 
             elif market_id == "BASF":
                 global model_BASF
@@ -159,7 +149,6 @@ class SimpleAgent(BaseAgent):
                 self.BASF_ticks.loc[len(self.BASF_ticks)] = self.last_60_ticks[
                     self.market_id_index[market_id]]
                 prediction = model_BASF.predict(self.BASF_ticks, verbose=0)
-                # self.BASF_ticks = self.BASF_ticks[:-1]
 
             elif market_id == "Bayer":
                 global model_Bayer
@@ -168,7 +157,6 @@ class SimpleAgent(BaseAgent):
                 self.Bayer_ticks.loc[len(self.Bayer_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
                 prediction = model_Bayer.predict(self.Bayer_ticks, verbose=0)
-                # self.Bayer_ticks = self.Bayer_ticks[:-1]
 
             elif market_id == "BMW":
                 global model_BMW
@@ -177,7 +165,6 @@ class SimpleAgent(BaseAgent):
                 self.BMW_ticks.loc[len(self.BMW_ticks)] = self.last_60_ticks[
                     self.market_id_index[market_id]]
                 prediction = model_BMW.predict(self.BMW_ticks, verbose=0)
-                # self.BMW_ticks = self.BMW_ticks[:-1]
 
             elif market_id == "Continental":
                 global model_Continental
@@ -185,9 +172,8 @@ class SimpleAgent(BaseAgent):
                     columns=[str(i) for i in range(0, 60)])
                 self.Continental_ticks.loc[len(self.Continental_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
-                prediction = model_Continental.predict(self.Continental_ticks,
-                                                       verbose=0)
-                # self.Continental_ticks = self.Continental_ticks[:-1]
+                prediction = model_Continental.predict(self.Continental_ticks, verbose=0)
+
 
             elif market_id == "Covestro":
                 global model_Covestro
@@ -195,9 +181,8 @@ class SimpleAgent(BaseAgent):
                     columns=[str(i) for i in range(0, 60)])
                 self.Covestro_ticks.loc[len(self.Covestro_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
-                prediction = model_Covestro.predict(self.Covestro_ticks,
-                                                    verbose=0)
-                # self.Covestro_ticks = self.Covestro_ticks[:-1]
+                prediction = model_Covestro.predict(self.Covestro_ticks, verbose=0)
+
 
             elif market_id == "Daimler":
                 global model_Daimler
@@ -205,9 +190,8 @@ class SimpleAgent(BaseAgent):
                     columns=[str(i) for i in range(0, 60)])
                 self.Daimler_ticks.loc[len(self.Daimler_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
-                prediction = model_Daimler.predict(self.Daimler_ticks,
-                                                   verbose=0)
-                # self.Daimler_ticks = self.Daimler_ticks[:-1]
+                prediction = model_Daimler.predict(self.Daimler_ticks, verbose=0)
+
 
             elif market_id == "DeutscheBank":
                 global model_DeutscheBank
@@ -215,9 +199,8 @@ class SimpleAgent(BaseAgent):
                     columns=[str(i) for i in range(0, 60)])
                 self.DeutscheBank_ticks.loc[len(self.DeutscheBank_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
-                prediction = model_DeutscheBank.predict(
-                    self.DeutscheBank_ticks, verbose=0)
-                # self.DeutscheBank_ticks = self.DeutscheBank_ticks[:-1]
+                prediction = model_DeutscheBank.predict(self.DeutscheBank_ticks, verbose=0)
+
 
             elif market_id == "DeutscheBörse":
                 global model_DeutscheBoerse
@@ -225,9 +208,8 @@ class SimpleAgent(BaseAgent):
                     columns=[str(i) for i in range(0, 60)])
                 self.DeutscheBoerse_ticks.loc[len(self.DeutscheBoerse_ticks)] = \
                 self.last_60_ticks[self.market_id_index[market_id]]
-                prediction = model_DeutscheBoerse.predict(
-                    self.DeutscheBoerse_ticks, verbose=0)
-                # self.DeutscheBoerse_ticks = self.DeutscheBoerse_ticks[:-1]
+                prediction = model_DeutscheBoerse.predict(self.DeutscheBoerse_ticks, verbose=0)
+
 
             if prediction[0][0] >= 0.5:
                 assigned_guess[market_id] = "UP"
@@ -246,57 +228,23 @@ class SimpleAgent(BaseAgent):
                                                                    status="ACTIVE",
                                                                    side="buy"):
                 self.market_interface.cancel_order(order)
-            # [self.market_interface.cancel_order(order) for order in self.market_interface.get_filtered_orders(market_id, status="ACTIVE", side="buy")]
-            # if market_id == "BASF":
-            # print("########################")
-            # print("orders gecancelt")
+
             for order in self.market_interface.get_filtered_orders(market_id,
                                                                    status="ACTIVE",
                                                                    side="sell"):
                 self.market_interface.cancel_order(order)
-            # [self.market_interface.cancel_order(order) for order in self.market_interface.get_filtered_orders(market_id, status="ACTIVE", side="buy")]
-            # if market_id == "BASF":
-            # print("########################")
-            # print("orders gecancelt")
+
 
         self.total_trades[self.market_id_index[market_id]] = total_trades_num
         # self.total_trades[self.market_id_index[market_id]] = len(total_trades)
-
-        """#cancel old orders
-        #if len(self.market_interface.get_filtered_orders(market_id, status="ACTIVE")) > 0:
-        #    [self.market_interface.cancel_order(order) for order in
-        #     self.market_interface.get_filtered_orders(market_id, status="ACTIVE")]"""
 
         if self.market_interface.exposure_left >= 50000:
             self.cancel_all = False
             # wait till all market orders have been hit
             if self.rebalance_orders_submitted and not self.market_interface.get_filtered_orders(
-                    status="ACTIVE"):
-                """#print("######################")
-                #print(self.assigned_guess)
-                for item in self.market_interface.pnl_realized.items():
-                    self.profit_and_loss[self.market_id_index[item[0]]].append(
-                        item[1])
-                print(self.profit_and_loss)
-                for key in self.market_id_index.keys():
-                    try:
-                        pnl = self.profit_and_loss[self.market_id_index[key]][-1]
-                        pnl_2 = self.profit_and_loss[self.market_id_index[key]][-2]
-                        pnl_3 = self.profit_and_loss[self.market_id_index[key]][-3]
-                        # if pnl < self.profit_and_loss[self.market_id_index[key]][-2] and self.assigned_guess[key] == "UP":
-                        if (pnl < pnl_2) and (pnl_2 < pnl_3) and self.assigned_guess[key] == "UP":
-                            self.assigned_guess[key] = "DOWN"
-                        elif (pnl < pnl_2) and (pnl_2 < pnl_3) and self.assigned_guess[key] == "DOWN":
-                            self.assigned_guess[key] = "UP"
-
-                        #self.profit_and_loss[self.market_id_index[key]] = self.profit_and_loss[self.market_id_index[key]][:0]
-                        self.profit_and_loss[self.market_id_index[key]] = []
-                    except (KeyError, IndexError):
-                        print("IndexError")"""
-
+                    status="ACTIVE"):       
                 self.rebalance_orders_submitted = False
                 self.trading_phase = True
-                # print(self.assigned_guess)
 
             # if we dont have quotable Spread, don´t sumbitt new and cancel old:
             if self.spread_market[market_id] > self.max_spread_quoted:
@@ -327,7 +275,6 @@ class SimpleAgent(BaseAgent):
                         if not self.market_interface.get_filtered_orders(
                                 market_id, status="ACTIVE"):
                             if not assigned_guess[market_id]:
-                                # print(self.assigned_guess)
                                 self.market_interface.submit_order(market_id,
                                                                    side="buy",
                                                                    quantity=
@@ -345,7 +292,6 @@ class SimpleAgent(BaseAgent):
                                                                    book_state[
                                                                        "L2-AskPrice"])
                             elif assigned_guess[market_id] == "UP":
-                                # print(self.assigned_guess)
                                 self.market_interface.submit_order(market_id,
                                                                    side="buy",
                                                                    quantity=math.floor(
@@ -363,7 +309,6 @@ class SimpleAgent(BaseAgent):
                                                                    book_state[
                                                                        "L2-AskPrice"])
                             elif assigned_guess[market_id] == "DOWN":
-                                # print(self.assigned_guess)
                                 self.market_interface.submit_order(market_id,
                                                                    side="buy",
                                                                    quantity=
@@ -505,9 +450,6 @@ class SimpleAgent(BaseAgent):
 
         ######store values at the end of a session###
         if timestamp == timestamp_next:
-            """for market_id in self.market_interface.market_state_list.keys():
-                [print(order.__str__()) for order in self.market_interface.get_filtered_orders(market_id)]"""
-
             trades = self.market_interface.get_filtered_trades()
             quantity = sum(t.quantity for t in trades)
             if quantity > 0:
@@ -621,19 +563,7 @@ class SimpleAgent(BaseAgent):
             num_shares_s_df = pd.DataFrame.from_dict(num_shares_s,
                                                      orient="index")
             num_quotes_df = pd.DataFrame.from_dict(num_quotes, orient="index")
-            """try:
-                titm_df.columns = [str(timestamp)]
-                proz_titm_df.columns = ["%-Time in the Market"]
-                VWAP_score_df.columns = ["VWAP_Score"]
-                pnl_df.columns = ["pnl_realized"]
-                pnl_unr_df.columns = ["pnl_unrealized"]
-                trades_df.columns = ["n_trades"]
-                trigger_storage_take_prof_df.columns = ["n_take_prof"]
-                trigger_storage_stop_loss_df.columns = ["n_stopp_loss"]
-                volume_df.columns = ["dollar_volume_traded"]
-                trading_costs_df.columns = ["trading_costs"]
-            except ValueError:
-                pass"""
+           
             titm_df.columns = [str(timestamp)]
             proz_titm_df.columns = ["%-Time in the Market"]
             VWAP_score_df.columns = ["VWAP_Score"]
@@ -776,18 +706,11 @@ if __name__ == "__main__":
                               ],
                               )
 
-# print results in excel:
+# safe results:
 result_per_Share.iloc[:1] = result_per_Share.iloc[:1].astype(str)
 result_matrix["session_length"] = result_matrix["session_length"].astype(str)
-"""name_of_file = "result_" + agent.name + ".xlsx"
-writer = pd.ExcelWriter(name_of_file)
-result_matrix.to_excel(writer,"result_matrix")
-result_per_Share.to_excel(writer,"result_per_Share")
-result_exposure.to_excel(writer, "exposure_history")
-writer.save()"""
 
 result_per_Share.to_csv("./log_regression/results_per_share_session2.csv")
 result_matrix.to_csv("./log_regression/result_matrix_session2.csv")
 result_exposure.to_csv("./log_regression/result_exposure_session2.csv")
-
-# result_per_Share.to_csv("./log_regression/number_of_shares2.csv")
+result_per_Share.to_csv("./log_regression/number_of_shares2.csv")
